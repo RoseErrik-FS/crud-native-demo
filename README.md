@@ -12,6 +12,26 @@ Mobile application built with React Native that allows users to manage their boo
 - Update book details
 - Delete books from the collection
 
+### Installation
+
+1. Clone the repository to your local machine:
+
+```bash
+git clone https://github.com/RoseErrik-FS/crud-native-demo.git
+cd crud-native-demo
+```
+2. Install the required dependencies:
+```bash
+npm install
+```
+3. Start the the Expo Dev Server:
+```bash
+npx expo start
+```
+4. Choose your desired mobile device:
+```bash
+The Application was built being tested on android.
+```
 ## How to Use
 
 1. **Launch the app on your mobile device using Expo Go.**
