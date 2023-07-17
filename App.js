@@ -1,9 +1,10 @@
-// App.js
 import React from "react";
 import { StatusBar } from "expo-status-bar";
-import { SafeAreaView, Text } from "react-native";
+import { SafeAreaView } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+
+import { appStyles, headerStyles } from "./AppStyles"; // Import headerStyles
 
 import HomeScreen from "./screens/HomeScreen";
 import BookListScreen from "./screens/BookListScreen";
@@ -14,9 +15,12 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={appStyles.container}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Home">
+        <Stack.Navigator
+          initialRouteName="Home"
+          screenOptions={headerStyles} // Use headerStyles for screenOptions
+        >
           <Stack.Screen
             name="Home"
             component={HomeScreen}

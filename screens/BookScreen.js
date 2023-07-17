@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 
+import { commonStyles, bookScreenStyles, newBookStyles } from "../AppStyles";
+
 const API_BASE =
   process.env.NODE_ENV === "development"
     ? "https://crude-demo-site-4e1109ef72c4.herokuapp.com/api/v1"
@@ -118,73 +120,65 @@ const BookScreen = () => {
   }
 
   return (
-    <View style={{ flex: 1, padding: 16 }}>
+    <View style={bookScreenStyles.container}>
       <View>
-        <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 16 }}>
-          Book Profile
-        </Text>
+        <Text style={bookScreenStyles.title}>Book Profile</Text>
         {book && (
-          <View style={{ marginBottom: 16 }}>
-            <Text>Title: {book.title}</Text>
-            <Text>Author: {book.author}</Text>
-            <Text>Genre: {book.genre}</Text>
+          <View style={bookScreenStyles.bookInfoContainer}>
+            <Text style={bookScreenStyles.bookInfoText}>
+              Title: {book.title}
+            </Text>
+            <Text style={bookScreenStyles.bookInfoText}>
+              Author: {book.author}
+            </Text>
+            <Text style={bookScreenStyles.bookInfoText}>
+              Genre: {book.genre}
+            </Text>
           </View>
         )}
-        <View>
-          <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 16 }}>
-            Update Book
-          </Text>
-          <TextInput
-            placeholder="Title"
-            value={values.title}
-            onChangeText={(text) => handleInputChange("title", text)}
-            style={{
-              borderWidth: 1,
-              borderColor: "#ccc",
-              padding: 8,
-              marginBottom: 8,
-            }}
-          />
-          <TextInput
-            placeholder="Author"
-            value={values.author}
-            onChangeText={(text) => handleInputChange("author", text)}
-            style={{
-              borderWidth: 1,
-              borderColor: "#ccc",
-              padding: 8,
-              marginBottom: 8,
-            }}
-          />
-          <TextInput
-            placeholder="Genre"
-            value={values.genre}
-            onChangeText={(text) => handleInputChange("genre", text)}
-            style={{
-              borderWidth: 1,
-              borderColor: "#ccc",
-              padding: 8,
-              marginBottom: 8,
-            }}
-          />
+        <View style={bookScreenStyles.updateSection}>
+          <Text style={bookScreenStyles.title}>Update Book</Text>
+          <View style={newBookStyles.textInputContainer}>
+            <TextInput
+              placeholder="Title"
+              value={values.title}
+              onChangeText={(text) => handleInputChange("title", text)}
+              style={newBookStyles.textInput}
+              placeholderTextColor={newBookStyles.placeholderText.color}
+            />
+          </View>
+          <View style={newBookStyles.textInputContainer}>
+            <TextInput
+              placeholder="Author"
+              value={values.author}
+              onChangeText={(text) => handleInputChange("author", text)}
+              style={newBookStyles.textInput}
+              placeholderTextColor={newBookStyles.placeholderText.color}
+            />
+          </View>
+          <View style={newBookStyles.textInputContainer}>
+            <TextInput
+              placeholder="Genre"
+              value={values.genre}
+              onChangeText={(text) => handleInputChange("genre", text)}
+              style={newBookStyles.textInput}
+              placeholderTextColor={newBookStyles.placeholderText.color}
+            />
+          </View>
           <View
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
             <TouchableOpacity
               onPress={deleteBook}
-              style={{ backgroundColor: "red", padding: 8, borderRadius: 4 }}
+              style={bookScreenStyles.deleteButton}
             >
-              <Text style={{ color: "white", textAlign: "center" }}>
-                Delete Book
-              </Text>
+              <Text style={bookScreenStyles.buttonText}>Delete Book</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={handleSubmit}
-              style={{ backgroundColor: "blue", padding: 8, borderRadius: 4 }}
+              style={bookScreenStyles.updateButton}
             >
-              <Text style={{ color: "white", textAlign: "center" }}>
-                Update Book
-              </Text>
+              <Text style={bookScreenStyles.buttonText}>Update Book</Text>
             </TouchableOpacity>
           </View>
         </View>

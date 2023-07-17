@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
+import { commonStyles, bookListStyles } from "../AppStyles";
+
 const API_BASE =
   process.env.NODE_ENV === "development"
     ? "https://crude-demo-site-4e1109ef72c4.herokuapp.com/api/v1"
@@ -57,13 +59,11 @@ const BookListScreen = () => {
   }
 
   return (
-    <View style={{ flex: 1, padding: 16 }}>
+    <View style={bookListStyles.container}>
       <View>
-        <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 16 }}>
-          Book List
-        </Text>
+        <Text style={bookListStyles.title}>Book List</Text>
         {books.length === 0 ? (
-          <Text>No books found.</Text>
+          <Text style={bookListStyles.bookTitle}>No books found.</Text>
         ) : (
           <FlatList
             data={books}
@@ -71,15 +71,11 @@ const BookListScreen = () => {
             renderItem={({ item }) => (
               <TouchableOpacity
                 onPress={() => handleBookPress(item._id)}
-                style={{
-                  borderWidth: 1,
-                  borderColor: "#ccc",
-                  padding: 16,
-                  marginBottom: 8,
-                  borderRadius: 4,
-                }}
+                style={bookListStyles.bookItem}
               >
-                <Text>Title: {item.title}</Text>
+                <Text style={bookListStyles.bookTitle}>
+                  Title: {item.title}
+                </Text>
               </TouchableOpacity>
             )}
           />
@@ -87,16 +83,9 @@ const BookListScreen = () => {
       </View>
       <TouchableOpacity
         onPress={() => navigation.navigate("NewBook")}
-        style={{
-          backgroundColor: "green",
-          padding: 8,
-          borderRadius: 4,
-          marginTop: 16,
-        }}
+        style={bookListStyles.addButton}
       >
-        <Text style={{ color: "white", textAlign: "center" }}>
-          Add New Book
-        </Text>
+        <Text style={commonStyles.buttonText}>Add New Book</Text>
       </TouchableOpacity>
     </View>
   );

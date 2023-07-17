@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
+import { commonStyles, newBookStyles } from "../AppStyles";
+
 const API_BASE =
   process.env.NODE_ENV === "development"
     ? "https://crude-demo-site-4e1109ef72c4.herokuapp.com/api/v1"
@@ -67,49 +69,41 @@ const NewBookScreen = () => {
   }
 
   return (
-    <View style={{ flex: 1, padding: 16 }}>
+    <View style={newBookStyles.container}>
       <View>
-        <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 16 }}>
-          Add New Book
-        </Text>
-        <TextInput
-          placeholder="Title"
-          value={values.title}
-          onChangeText={(text) => handleInputChange("title", text)}
-          style={{
-            borderWidth: 1,
-            borderColor: "#ccc",
-            padding: 8,
-            marginBottom: 8,
-          }}
-        />
-        <TextInput
-          placeholder="Author"
-          value={values.author}
-          onChangeText={(text) => handleInputChange("author", text)}
-          style={{
-            borderWidth: 1,
-            borderColor: "#ccc",
-            padding: 8,
-            marginBottom: 8,
-          }}
-        />
-        <TextInput
-          placeholder="Genre"
-          value={values.genre}
-          onChangeText={(text) => handleInputChange("genre", text)}
-          style={{
-            borderWidth: 1,
-            borderColor: "#ccc",
-            padding: 8,
-            marginBottom: 8,
-          }}
-        />
+        <Text style={newBookStyles.title}>Add New Book</Text>
+        <View style={newBookStyles.textInputContainer}>
+          <TextInput
+            placeholder="Title"
+            value={values.title}
+            onChangeText={(text) => handleInputChange("title", text)}
+            style={newBookStyles.textInput}
+            placeholderTextColor={newBookStyles.placeholderText.color}
+          />
+        </View>
+        <View style={newBookStyles.textInputContainer}>
+          <TextInput
+            placeholder="Author"
+            value={values.author}
+            onChangeText={(text) => handleInputChange("author", text)}
+            style={newBookStyles.textInput}
+            placeholderTextColor={newBookStyles.placeholderText.color}
+          />
+        </View>
+        <View style={newBookStyles.textInputContainer}>
+          <TextInput
+            placeholder="Genre"
+            value={values.genre}
+            onChangeText={(text) => handleInputChange("genre", text)}
+            style={newBookStyles.textInput}
+            placeholderTextColor={newBookStyles.placeholderText.color}
+          />
+        </View>
         <TouchableOpacity
           onPress={handleSubmit}
-          style={{ backgroundColor: "blue", padding: 8, borderRadius: 4 }}
+          style={newBookStyles.addButton}
         >
-          <Text style={{ color: "white", textAlign: "center" }}>Add Book</Text>
+          <Text style={newBookStyles.addButtonText}>Add Book</Text>
         </TouchableOpacity>
       </View>
     </View>

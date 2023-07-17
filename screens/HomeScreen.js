@@ -1,19 +1,28 @@
-// screens/HomeScreen.js
 import React from "react";
-import { View, Text, Button } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
+import { commonStyles, homeStyles } from "../AppStyles";
 
 const HomeScreen = ({ navigation }) => {
+  const styles = {
+    ...commonStyles.container,
+    ...homeStyles.container,
+  };
+
+  const handleAddNewBook = () => {
+    navigation.navigate("NewBook");
+  };
+
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text>Home Screen</Text>
-      <Button
-        title="Go to Book List"
+    <View style={styles}>
+      <TouchableOpacity
+        style={commonStyles.button}
         onPress={() => navigation.navigate("BookList")}
-      />
-      <Button
-        title="Go to Book"
-        onPress={() => navigation.navigate("Book", { bookId: 1 })}
-      />
+      >
+        <Text style={commonStyles.buttonText}>Go to Book List</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={commonStyles.button} onPress={handleAddNewBook}>
+        <Text style={commonStyles.buttonText}>Add New Book</Text>
+      </TouchableOpacity>
     </View>
   );
 };
