@@ -1,188 +1,160 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
-import { useRoute, useNavigation } from "@react-navigation/native";
-
 import { commonStyles, bookScreenStyles, newBookStyles } from "../AppStyles";
-
-const API_BASE =
-  process.env.NODE_ENV === "development"
-    ? "https://crude-demo-site-4e1109ef72c4.herokuapp.com/api/v1"
-    : "https://crude-demo-site-4e1109ef72c4.herokuapp.com/api/v1";
+import React, { useState, useEffect } from "react";
+import { View, Text, TextInput, Alert, TouchableOpacity } from "react-native";
+import { useRoute, useNavigation } from "@react-navigation/native";
+import bookService from "../services/bookService";
 
 const BookScreen = () => {
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [updating, setUpdating] = useState(false);
   const [values, setValues] = useState({
     title: "",
     author: "",
     genre: "",
   });
 
-  const route = useRoute();
   const navigation = useNavigation();
-  const { _id } = route.params;
 
-  // Fetch book data from the API
-  const getBook = async () => {
+  // Get the selected book ID from the navigation route
+  const route = useRoute();
+  const bookId = route.params?._id;
+
+  // Fetch the selected book from the API
+  const fetchBook = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_BASE}/books/${_id}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch book data");
-      }
-      const data = await response.json();
-      setBook(data);
-      setValues({
-        title: data.title,
-        author: data.author,
-        genre: data.genre,
-      });
+      const bookData = await bookService.getBook(bookId);
+      setBook(bookData);
+      setLoading(false);
     } catch (error) {
-      setError(error.message || "Unexpected Error");
-    } finally {
+      console.log("Error fetching book:", error.message);
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    console.log("Book ID:", _id);
-    getBook();
+    fetchBook();
   }, []);
 
-  console.log("Book ID:", _id);
-  console.log("API Response:", book);
-  console.log("Form Values:", values);
-
-  // Delete book from the API
-  const deleteBook = async () => {
-    try {
-      setLoading(true);
-      await fetch(`${API_BASE}/books/${_id}`, {
-        method: "DELETE",
-      });
-      navigation.navigate("BookList");
-    } catch (error) {
-      setError(error.message || "Unexpected Error");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Update book data in the API
-  const updateBook = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch(`${API_BASE}/books/${_id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title: values.title,
-          author: values.author,
-          genre: values.genre,
-        }),
-      });
-      if (!response.ok) {
-        throw new Error("Failed to update data");
-      }
-      const data = await response.json();
-      setBook(data);
-      navigation.goBack();
-    } catch (error) {
-      setError(error.message || "Unexpected Error");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Handle form submission
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    updateBook();
-  };
-
-  // Handle input changes
-  const handleInputChange = (key, value) => {
-    setValues((prevValues) => ({
-      ...prevValues,
-      [key]: value,
+  // Handle input changes in the update form
+  const handleInputChange = (name, value) => {
+    setValues((values) => ({
+      ...values,
+      [name]: value,
     }));
   };
 
+  // Handle form submission for updating the book
+  const handleUpdateBook = async () => {
+    try {
+      setLoading(true);
+      const updatedBook = {
+        title: values.title || book.title,
+        author: values.author || book.author,
+        genre: values.genre || book.genre,
+      };
+      await bookService.updateBook(bookId, updatedBook);
+      fetchBook(); // Refresh the book details after updating
+      setUpdating(false);
+    } catch (error) {
+      console.log("Error updating book:", error.message);
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteBook = async () => {
+    try {
+      setLoading(true);
+      await bookService.deleteBook(bookId);
+      // Show a confirmation message to the user
+      Alert.alert("Book Deleted", "The book has been successfully deleted.", [
+        {
+          text: "OK",
+          onPress: () => {
+            // Navigate back to the book list after deletion
+            navigation.goBack();
+          },
+        },
+      ]);
+    } catch (error) {
+      console.log("Error deleting book:", error.message);
+      setLoading(false);
+    }
+  };
+
+  // Render loading state
   if (loading) {
     return <Text>Loading...</Text>;
   }
 
-  if (error) {
-    return <Text>Error: {error}</Text>;
+  // Check if book is undefined before rendering the book details
+  if (!book) {
+    return <Text>Book not found.</Text>;
   }
 
+  // Render book details and update form
+
+  // Render book details and update form
   return (
     <View style={bookScreenStyles.container}>
-      <View>
-        <Text style={bookScreenStyles.title}>Book Profile</Text>
-        {book && (
-          <View style={bookScreenStyles.bookInfoContainer}>
-            <Text style={bookScreenStyles.bookInfoText}>
-              Title: {book.title}
-            </Text>
-            <Text style={bookScreenStyles.bookInfoText}>
-              Author: {book.author}
-            </Text>
-            <Text style={bookScreenStyles.bookInfoText}>
-              Genre: {book.genre}
-            </Text>
-          </View>
-        )}
-        <View style={bookScreenStyles.updateSection}>
-          <Text style={bookScreenStyles.title}>Update Book</Text>
-          <View style={newBookStyles.textInputContainer}>
-            <TextInput
-              placeholder="Title"
-              value={values.title}
-              onChangeText={(text) => handleInputChange("title", text)}
-              style={newBookStyles.textInput}
-              placeholderTextColor={newBookStyles.placeholderText.color}
-            />
-          </View>
-          <View style={newBookStyles.textInputContainer}>
-            <TextInput
-              placeholder="Author"
-              value={values.author}
-              onChangeText={(text) => handleInputChange("author", text)}
-              style={newBookStyles.textInput}
-              placeholderTextColor={newBookStyles.placeholderText.color}
-            />
-          </View>
-          <View style={newBookStyles.textInputContainer}>
-            <TextInput
-              placeholder="Genre"
-              value={values.genre}
-              onChangeText={(text) => handleInputChange("genre", text)}
-              style={newBookStyles.textInput}
-              placeholderTextColor={newBookStyles.placeholderText.color}
-            />
-          </View>
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
+      <Text style={bookScreenStyles.title}>Book Details</Text>
+      <View style={bookScreenStyles.bookInfoContainer}>
+        <Text style={bookScreenStyles.bookInfoText}>Title: {book.title}</Text>
+        <Text style={bookScreenStyles.bookInfoText}>Author: {book.author}</Text>
+        <Text style={bookScreenStyles.bookInfoText}>Genre: {book.genre}</Text>
+      </View>
+      {updating ? (
+        <View style={newBookStyles.textInputContainer}>
+          <TextInput
+            placeholder="Title"
+            value={values.title || book.title}
+            onChangeText={(text) => handleInputChange("title", text)}
+            style={bookScreenStyles.textInput}
+          />
+          <TextInput
+            placeholder="Author"
+            value={values.author || book.author}
+            onChangeText={(text) => handleInputChange("author", text)}
+            style={bookScreenStyles.textInput}
+          />
+          <TextInput
+            placeholder="Genre"
+            value={values.genre || book.genre}
+            onChangeText={(text) => handleInputChange("genre", text)}
+            style={bookScreenStyles.textInput}
+          />
+          <View style={bookScreenStyles.updateSection}>
             <TouchableOpacity
-              onPress={deleteBook}
-              style={bookScreenStyles.deleteButton}
+              style={bookScreenStyles.updateButton}
+              onPress={handleUpdateBook}
             >
-              <Text style={bookScreenStyles.buttonText}>Delete Book</Text>
+              <Text style={commonStyles.buttonText}>Update</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={handleSubmit}
-              style={bookScreenStyles.updateButton}
+              style={bookScreenStyles.deleteButton}
+              onPress={() => setUpdating(false)}
             >
-              <Text style={bookScreenStyles.buttonText}>Update Book</Text>
+              <Text style={commonStyles.buttonText}>Cancel</Text>
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      ) : (
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <TouchableOpacity
+            style={bookScreenStyles.updateButton}
+            onPress={() => setUpdating(true)}
+          >
+            <Text style={commonStyles.buttonText}>Update Book</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={bookScreenStyles.deleteButton}
+            onPress={() => handleDeleteBook(bookId)}
+          >
+            <Text style={commonStyles.buttonText}>Delete Book</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };

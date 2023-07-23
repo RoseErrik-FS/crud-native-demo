@@ -3,6 +3,7 @@ const colors = {
   secondary: "#6c757d",
   background: "#1a1a1a",
   text: "#fff",
+  textInput: "#000",
 };
 
 const appStyles = {
@@ -88,6 +89,15 @@ const bookListStyles = {
     color: "white",
     textAlign: "center",
   },
+  textInput: {
+    borderWidth: 1,
+    borderColor: colors.secondary,
+    padding: 8,
+    marginBottom: 8,
+    color: colors.textInput,
+    backgroundColor: "#f0f0f0", // Change the background color
+    borderRadius: 8, // Add border radius
+  },
 };
 
 const newBookStyles = {
@@ -103,9 +113,9 @@ const newBookStyles = {
     color: "white",
   },
   textInputContainer: {
+    padding: 16,
     marginBottom: 16,
-    paddingHorizontal: 16,
-    backgroundColor: "white",
+    backgroundColor: colors.background,
     borderRadius: 8,
   },
   textInput: {
@@ -130,46 +140,50 @@ const bookScreenStyles = {
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: colors.background,
+    backgroundColor: "#222222",
+    width: "100%",
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 16,
-    color: colors.text,
+    color: "white",
   },
   bookInfoContainer: {
+    flex: 1,
     marginBottom: 16,
   },
   bookInfoText: {
-    color: colors.text,
+    color: "white",
   },
   updateSection: {
-    marginBottom: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   textInput: {
     borderWidth: 1,
     borderColor: colors.secondary,
     padding: 8,
     marginBottom: 8,
-    color: colors.text,
+    color: colors.textInput,
+    backgroundColor: colors.text,
+    borderRadius: 8,
   },
   deleteButton: {
     backgroundColor: "red",
     padding: 8,
     borderRadius: 4,
-    flex: 1,
-    marginRight: 8,
   },
   updateButton: {
     backgroundColor: "blue",
     padding: 8,
     borderRadius: 4,
-    flex: 1,
   },
   buttonText: {
     color: "white",
-    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "bold",
   },
   placeholderText: {
     color: colors.placeholder,
